@@ -60,8 +60,26 @@
         <span class="period-label">Test</span>
         <span class="period-val">2025 &ndash; 2026</span>
       </div>
+      <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
     </div>
   </nav>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#overview" class="nav-link active" data-section="overview">Overview</a>
+    <a href="#sentiment" class="nav-link" data-section="sentiment">Sentiment</a>
+    <a href="#models" class="nav-link" data-section="models">Models</a>
+    <a href="#features" class="nav-link" data-section="features">Features</a>
+    <a href="#backtest" class="nav-link" data-section="backtest">Backtest</a>
+    <a href="#statistics" class="nav-link" data-section="statistics">Statistics</a>
+    <a href="#forecast" class="nav-link" data-section="forecast">Forecast</a>
+    <a href="#simulation" class="nav-link" data-section="simulation">Simulation</a>
+    <div class="mobile-menu-divider"></div>
+    <div class="mobile-menu-period">Train: 2019&ndash;2024 &nbsp;|&nbsp; Test: 2025&ndash;2026</div>
+  </div>
 
   <div id="missing-banner" class="data-missing-banner" style="max-width:1600px;margin:72px auto 0;padding-left:24px;padding-right:24px">
     <strong>Some data files could not be loaded.</strong> Run <code>export_to_json.py</code> from your notebook directory and copy the <code>dashboard_data/</code> folder next to <code>index.html</code> before deploying.
@@ -808,7 +826,7 @@
 
       <div class="explainer-box">
         <div class="explainer-title">How the Simulation Works</div>
-        <p class="explainer-text">This simulator applies your chosen parameters to the <strong>actual LSTM model backtest data</strong> from the test period (2025&ndash;2026). The AI Signal strategy uses predicted vs actual close prices to generate long signals. Transaction costs are deducted on each trade entry/exit. The confidence threshold filters out low-conviction signals (small predicted moves). Position sizing applies fractional capital allocation. Stop-loss exits positions when intraday loss exceeds the threshold. All metrics are computed from real data — not a simulation of data.</p>
+        <p class="explainer-text">This simulator applies your chosen parameters to the <strong>actual LSTM model backtest data</strong> from the test period (2025&ndash;2026). The AI Signal strategy uses predicted vs actual close prices to generate long signals. Transaction costs are deducted on each trade entry/exit. The confidence threshold filters out low-conviction signals (small predicted moves). Position sizing applies fractional capital allocation. Stop-loss exits positions when intraday loss exceeds the threshold. All metrics are computed from real data &mdash; not a simulation of data.</p>
       </div>
     </section>
 
