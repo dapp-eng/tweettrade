@@ -1,0 +1,47 @@
+[
+  {
+    "index":0,
+    "Model":"LSTM (KomVar8)",
+    "RMSE (IDR)":232.720963,
+    "MAE (IDR)":194.257872,
+    "MAPE (%)":2.596295,
+    "R2":0.918865,
+    "Dir Acc (%)":40.785498
+  },
+  {
+    "index":2,
+    "Model":"GRU (KomVar8)",
+    "RMSE (IDR)":283.471157,
+    "MAE (IDR)":245.280326,
+    "MAPE (%)":3.237775,
+    "R2":0.879619,
+    "Dir Acc (%)":40.181269
+  },
+  {
+    "index":4,
+    "Model":"LSTM_Attn (KomVar8)",
+    "RMSE (IDR)":357.772434,
+    "MAE (IDR)":319.108792,
+    "MAPE (%)":4.278581,
+    "R2":0.808242,
+    "Dir Acc (%)":40.483384
+  },
+  {
+    "index":3,
+    "Model":"BiLSTM (KomVar8)",
+    "RMSE (IDR)":362.498835,
+    "MAE (IDR)":325.858916,
+    "MAPE (%)":4.331198,
+    "R2":0.803142,
+    "Dir Acc (%)":40.483384
+  },
+  {
+    "index":1,
+    "Model":"LSTM (KomVar10)",
+    "RMSE (IDR)":449.761379,
+    "MAE (IDR)":418.066641,
+    "MAPE (%)":5.642787,
+    "R2":0.696958,
+    "Dir Acc (%)":40.181269
+  }
+]

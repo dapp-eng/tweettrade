@@ -1,0 +1,10 @@
+[
+  {
+    "Asset":"BBCA",
+    "Optimal Weight":0.5
+  },
+  {
+    "Asset":"IHSG",
+    "Optimal Weight":0.5
+  }
+]

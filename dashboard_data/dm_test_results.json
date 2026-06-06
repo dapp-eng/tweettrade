@@ -1,0 +1,14 @@
+[
+  {
+    "test":"MSE",
+    "dm_stat":-6.542044,
+    "p_value":0.0,
+    "significant":true
+  },
+  {
+    "test":"MAE",
+    "dm_stat":-8.273574,
+    "p_value":0.0,
+    "significant":true
+  }
+]

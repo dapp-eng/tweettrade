@@ -1,0 +1,18 @@
+[
+  {
+    "Configuration":"With Sentiment (KomVar8)",
+    "RMSE (IDR)":234.228414,
+    "MAE (IDR)":196.342799,
+    "MAPE (%)":2.618745,
+    "R2":0.91781,
+    "Dir Acc (%)":40.181269
+  },
+  {
+    "Configuration":"Without Sentiment (KomVar12)",
+    "RMSE (IDR)":259.432343,
+    "MAE (IDR)":226.175214,
+    "MAPE (%)":3.039777,
+    "R2":0.899171,
+    "Dir Acc (%)":40.785498
+  }
+]

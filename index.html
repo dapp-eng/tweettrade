@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon.png">
+<title>TweetTrade BBCA | Deep Learning Stock Prediction Dashboard</title>
+<meta name="description" content="Advanced BBCA.JK stock price prediction using LSTM GRU BiLSTM and IndoBERT sentiment analysis. Full data mining research dashboard.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<canvas id="particle-canvas" aria-hidden="true"></canvas>
+<div id="loading-screen">
+  <div class="loader-inner">
+    <div class="loader-logo">
+      <span class="logo-accent">Tweet</span>Trade
+    </div>
+    <div class="loader-subtitle">BBCA.JK Deep Learning Analytics</div>
+    <div class="loader-bar-wrap">
+      <div class="loader-bar" id="loader-bar"></div>
+    </div>
+    <div class="loader-status" id="loader-status">Initializing...</div>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+
+  <nav class="topnav" id="topnav">
+    <div class="nav-left">
+      <div class="nav-logo">
+        <span class="logo-accent">Tweet</span>Trade
+        <span class="nav-ticker">BBCA.JK</span>
+      </div>
+      <div class="nav-links">
+        <a href="#overview" class="nav-link active" data-section="overview">Overview</a>
+        <a href="#sentiment" class="nav-link" data-section="sentiment">Sentiment</a>
+        <a href="#models" class="nav-link" data-section="models">Models</a>
+        <a href="#features" class="nav-link" data-section="features">Features</a>
+        <a href="#backtest" class="nav-link" data-section="backtest">Backtest</a>
+        <a href="#statistics" class="nav-link" data-section="statistics">Statistics</a>
+        <a href="#forecast" class="nav-link" data-section="forecast">Forecast</a>
+        <a href="#simulation" class="nav-link" data-section="simulation">Simulation</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-badge" id="nav-live-price">
+        <span class="badge-label">Last Close</span>
+        <span class="badge-value" id="nav-price-val">Loading...</span>
+      </div>
+      <div class="nav-period">
+        <span class="period-label">Train</span>
+        <span class="period-val">2019 &ndash; 2024</span>
+        <span class="period-sep">|</span>
+        <span class="period-label">Test</span>
+        <span class="period-val">2025 &ndash; 2026</span>
+      </div>
+    </div>
+  </nav>
+
+  <div id="missing-banner" class="data-missing-banner" style="max-width:1600px;margin:72px auto 0;padding-left:24px;padding-right:24px">
+    <strong>Some data files could not be loaded.</strong> Run <code>export_to_json.py</code> from your notebook directory and copy the <code>dashboard_data/</code> folder next to <code>index.html</code> before deploying.
+    <ul></ul>
+  </div>
+  <main class="main-content">
+
+    <section id="overview" class="section active">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow">Bank Central Asia &bull; BBCA.JK &bull; IDX</div>
+          <h1 class="section-title">Stock Price Prediction <span class="accent">Research Dashboard</span></h1>
+          <p class="section-desc">16-KomVar Walk-Forward Validation &bull; LSTM &bull; GRU &bull; BiLSTM &bull; LSTM+Attention &bull; IndoBERT Sentiment &bull; Genetic Algorithm Feature Selection</p>
+        </div>
+        <div class="section-header-meta">
+          <div class="meta-chip"><span class="meta-dot green"></span>Data Mining Research</div>
+          <div class="meta-chip"><span class="meta-dot blue"></span>Deep Learning</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid" id="kpi-grid">
+        <div class="kpi-card" id="kpi-rmse">
+          <div class="kpi-label">Best RMSE</div>
+          <div class="kpi-value animated-num" data-key="rmse">--</div>
+          <div class="kpi-sub">IDR (Best Architecture)</div>
+          <div class="kpi-sparkline"><canvas id="spark-rmse"></canvas></div>
+        </div>
+        <div class="kpi-card" id="kpi-mape">
+          <div class="kpi-label">Best MAPE</div>
+          <div class="kpi-value animated-num" data-key="mape">--</div>
+          <div class="kpi-sub">% Prediction Error</div>
+          <div class="kpi-sparkline"><canvas id="spark-mape"></canvas></div>
+        </div>
+        <div class="kpi-card" id="kpi-r2">
+          <div class="kpi-label">Best R&sup2;</div>
+          <div class="kpi-value animated-num" data-key="r2">--</div>
+          <div class="kpi-sub">Coefficient of Determination</div>
+          <div class="kpi-sparkline"><canvas id="spark-r2"></canvas></div>
+        </div>
+        <div class="kpi-card" id="kpi-diracc">
+          <div class="kpi-label">Directional Accuracy</div>
+          <div class="kpi-value animated-num" data-key="diracc">--</div>
+          <div class="kpi-sub">% Correct Direction</div>
+          <div class="kpi-sparkline"><canvas id="spark-dirac"></canvas></div>
+        </div>
+        <div class="kpi-card" id="kpi-sharpe">
+          <div class="kpi-label">AI Strategy Sharpe</div>
+          <div class="kpi-value animated-num" data-key="sharpe">--</div>
+          <div class="kpi-sub">Risk-Adjusted Return</div>
+          <div class="kpi-sparkline"><canvas id="spark-sharpe"></canvas></div>
+        </div>
+        <div class="kpi-card" id="kpi-tweets">
+          <div class="kpi-label">Tweets Analyzed</div>
+          <div class="kpi-value animated-num" data-key="tweets">--</div>
+          <div class="kpi-sub">IndoBERT Classified</div>
+          <div class="kpi-sparkline"><canvas id="spark-tweets"></canvas></div>
+        </div>
+      </div>
+
+      <div class="chart-row chart-row-3col">
+        <div class="chart-card chart-col-2">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">BBCA.JK Price History</div>
+              <div class="chart-subtitle">Full dataset &bull; 2019&ndash;2026 &bull; Train / Test split</div>
+            </div>
+            <div class="chart-controls">
+              <button class="ctrl-btn active" data-range="all" data-chart="priceHistory">All</button>
+              <button class="ctrl-btn" data-range="2y" data-chart="priceHistory">2Y</button>
+              <button class="ctrl-btn" data-range="1y" data-chart="priceHistory">1Y</button>
+              <button class="ctrl-btn" data-range="test" data-chart="priceHistory">Test</button>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="priceHistory"></canvas></div>
+        </div>
+        <div class="chart-card chart-col-1">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">KomVar Feature Matrix</div>
+              <div class="chart-subtitle">22 variable combinations</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="komvarMatrix"></canvas></div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Walk-Forward Validation RMSE</div>
+              <div class="chart-subtitle">5-Fold &bull; All 22 KomVar &bull; Normalised (&times;10<sup>-4</sup>)</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="wfvChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Macro Indicators</div>
+              <div class="chart-subtitle">IHSG &bull; USD/IDR &bull; BI Rate</div>
+            </div>
+            <div class="chart-controls">
+              <button class="ctrl-btn active" data-layer="ihsg" data-chart="macroChart">IHSG</button>
+              <button class="ctrl-btn" data-layer="exch" data-chart="macroChart">EXCH</button>
+              <button class="ctrl-btn" data-layer="rate" data-chart="macroChart">BI Rate</button>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="macroChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-icon">&#9670;</div>
+          <div class="info-body">
+            <div class="info-title">Research Methodology</div>
+            <p>Replication and extension of journal-grade LSTM stock prediction. Four deep learning architectures (LSTM, GRU, BiLSTM, LSTM+Attention) are trained across 22 KomVar (variable combinations) using 5-fold walk-forward cross-validation on 2019&ndash;2024 training data.</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">&#9670;</div>
+          <div class="info-body">
+            <div class="info-title">Feature Engineering</div>
+            <p>12 technical indicators (SMA, WMA, EMA, MOM, Stochastic, RSI, MACD, ADO, CCI, Williams%R, MFI), fundamental macro variables (IHSG, JISDOR exchange rate, Bank Indonesia rate), and IndoBERT-derived sentiment features including Bullishness Index, Weighted Sentiment, EWMA Momentum, and Dispersion.</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">&#9670;</div>
+          <div class="info-body">
+            <div class="info-title">Genetic Algorithm Feature Selection</div>
+            <p>A genetic algorithm with Ridge regression proxy fitness was run for 30 generations on a population of 20 to select the optimal subset of technical indicators. The GA chromosome encodes binary feature inclusion, minimising validation RMSE via tournament selection, single-point crossover, and random mutation.</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">&#9670;</div>
+          <div class="info-body">
+            <div class="info-title">Hyperparameter Optimisation</div>
+            <p>Grid search across units (100/150/200), dropout (0.1/0.3), lookback timestamps (10/20), and learning rates was followed by Bayesian TPE optimisation via Optuna (50 trials), targeting minimum walk-forward validation RMSE on the two best-performing KomVar configurations.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sentiment" class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow">Natural Language Processing &bull; IndoBERT</div>
+          <h2 class="section-title">Twitter Sentiment <span class="accent">Analysis</span></h2>
+          <p class="section-desc">IndoBERT (mdhugol/indonesia-bert-sentiment-classification) inference on BBCA-related tweets &bull; Daily aggregated scores &bull; Enhanced sentiment features</p>
+        </div>
+      </div>
+
+      <div class="metric-row" id="sent-kpis"></div>
+
+      <div class="chart-row chart-row-3col">
+        <div class="chart-card chart-col-2">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Daily Sentiment Score Timeline</div>
+              <div class="chart-subtitle">Sent score = pos/(pos+neg) &bull; 0.5 = neutral threshold &bull; Green = bullish &bull; Red = bearish</div>
+            </div>
+            <div class="chart-controls">
+              <button class="ctrl-btn active" data-layer="sent_score" data-chart="sentTimeline">Sent Score</button>
+              <button class="ctrl-btn" data-layer="bullishness" data-chart="sentTimeline">Bullishness</button>
+              <button class="ctrl-btn" data-layer="weighted" data-chart="sentTimeline">Weighted</button>
+              <button class="ctrl-btn" data-layer="momentum" data-chart="sentTimeline">EWMA</button>
+            </div>
+          </div>
+          <div class="chart-wrap chart-tall"><canvas id="sentTimeline"></canvas></div>
+        </div>
+        <div class="chart-card chart-col-1">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Label Distribution</div>
+              <div class="chart-subtitle">IndoBERT 3-class classification</div>
+            </div>
+          </div>
+          <div class="chart-wrap chart-tall"><canvas id="sentDistribution"></canvas></div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Sentiment vs. Stock Returns</div>
+              <div class="chart-subtitle">Lagged sentiment (t-1) vs log return (t) &bull; Pearson and Spearman correlation</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="sentReturnCorr"></canvas></div>
+          <div class="chart-stat-row" id="corr-stats"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Rolling Correlation</div>
+              <div class="chart-subtitle">30-day rolling Pearson correlation &bull; Lagged sentiment vs. returns</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="rollingCorr"></canvas></div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Daily Tweet Volume</div>
+              <div class="chart-subtitle">Total tweets per business day &bull; BBCA corpus</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="tweetVolume"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Bullishness Index</div>
+              <div class="chart-subtitle">ln((1+pos)/(1+neg)) &bull; Filters neutral noise</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="bullishnessChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="explainer-box">
+        <div class="explainer-title">Bullishness Index Formula</div>
+        <div class="explainer-formula">
+          Bullishness<sub>t</sub> = ln&thinsp;( (1 + Count<sub>pos,t</sub>) / (1 + Count<sub>neg,t</sub>) )
+        </div>
+        <p class="explainer-text">The logarithmic Bullishness Index focuses on the ratio of positive to negative tweets, filtering the majority of neutral tweets while highlighting days with strong directional consensus. A positive value signals bullish Twitter activity; negative signals bearish activity. Adding 1 prevents division by zero and gracefully handles zero-count days.</p>
+      </div>
+
+      <div class="explainer-box">
+        <div class="explainer-title">Engagement-Weighted Sentiment</div>
+        <div class="explainer-formula">
+          Weighted<sub>t</sub> = &sum;<sub>i</sub> [(prob_pos<sub>i</sub> - prob_neg<sub>i</sub>) &times; (Likes<sub>i</sub> + Retweets<sub>i</sub> + 1)] &nbsp;/&nbsp; &sum;<sub>i</sub> (Likes<sub>i</sub> + Retweets<sub>i</sub> + 1)
+        </div>
+        <p class="explainer-text">High-engagement tweets (viral, many likes and retweets) carry proportionally more weight under the hypothesis that influential content has stronger market impact. The continuous sentiment score (prob_pos - prob_neg) per tweet provides fine-grained signal beyond binary labels.</p>
+      </div>
+    </section>
+
+    <section id="models" class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow">Deep Learning &bull; PyTorch</div>
+          <h2 class="section-title">Model Architecture <span class="accent">Comparison</span></h2>
+          <p class="section-desc">LSTM &bull; GRU &bull; Bidirectional LSTM &bull; LSTM + Self-Attention &bull; Optimised hyperparameters &bull; Test period 2025&ndash;2026</p>
+        </div>
+      </div>
+
+      <div class="arch-cards" id="arch-cards"></div>
+
+      <div class="chart-row chart-row-3col">
+        <div class="chart-card chart-col-2">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Prediction vs Actual &mdash; All Architectures</div>
+              <div class="chart-subtitle">Test period &bull; Held-out data &bull; Select architecture below</div>
+            </div>
+            <div class="chart-controls" id="arch-toggle"></div>
+          </div>
+          <div class="chart-wrap chart-tall"><canvas id="predActualChart"></canvas></div>
+        </div>
+        <div class="chart-card chart-col-1">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Metrics Radar</div>
+              <div class="chart-subtitle">Normalised performance across all metrics</div>
+            </div>
+          </div>
+          <div class="chart-wrap chart-tall"><canvas id="metricsRadar"></canvas></div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">RMSE Comparison</div>
+              <div class="chart-subtitle">IDR &bull; Lower is better</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="rmseBar"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">R&sup2; and Directional Accuracy</div>
+              <div class="chart-subtitle">Higher is better</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="r2DirBar"></canvas></div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Sentiment Ablation Study</div>
+              <div class="chart-subtitle">With sentiment KomVar vs without &bull; Bars normalised per-metric for comparability</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="ablationChart"></canvas></div>
+          <div class="ablation-summary" id="ablation-summary"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Grid Search Landscape</div>
+              <div class="chart-subtitle">Units vs timestamps RMSE heat map</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="heatmapChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="model-arch-explainer">
+        <div class="arch-node">
+          <div class="arch-node-title">LSTM</div>
+          <div class="arch-node-desc">Long Short-Term Memory &bull; Gated cell state preserves long-range dependencies &bull; Input/Forget/Output gates</div>
+        </div>
+        <div class="arch-arrow">&#8594;</div>
+        <div class="arch-node">
+          <div class="arch-node-title">GRU</div>
+          <div class="arch-node-desc">Gated Recurrent Unit &bull; Simplified gate structure (Reset + Update) &bull; Fewer parameters than LSTM</div>
+        </div>
+        <div class="arch-arrow">&#8594;</div>
+        <div class="arch-node">
+          <div class="arch-node-title">BiLSTM</div>
+          <div class="arch-node-desc">Bidirectional LSTM &bull; Processes sequence in both directions &bull; Concatenated hidden states [h_fwd; h_bwd]</div>
+        </div>
+        <div class="arch-arrow">&#8594;</div>
+        <div class="arch-node">
+          <div class="arch-node-title">LSTM + Attn</div>
+          <div class="arch-node-desc">LSTM with Self-Attention &bull; Context vector = weighted sum of all hidden states &bull; Learns importance per time step</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow">Explainable AI &bull; SHAP &bull; Permutation Importance</div>
+          <h2 class="section-title">Feature Importance <span class="accent">&amp; Selection</span></h2>
+          <p class="section-desc">SHAP KernelExplainer &bull; Permutation Feature Importance &bull; Genetic Algorithm selection &bull; 22 KomVar configurations</p>
+        </div>
+      </div>
+
+      <div class="chart-row chart-row-3col">
+        <div class="chart-card chart-col-2">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">SHAP Feature Importance</div>
+              <div class="chart-subtitle">Mean |SHAP value| across test samples &bull; Red = Sentiment &bull; Amber = Enhanced Sentiment &bull; Navy = Technical/Macro</div>
+            </div>
+          </div>
+          <div class="chart-wrap chart-tall"><canvas id="shapChart"></canvas></div>
+        </div>
+        <div class="chart-card chart-col-1">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Permutation Importance</div>
+              <div class="chart-subtitle">RMSE increase when feature is shuffled (IDR)</div>
+            </div>
+          </div>
+          <div class="chart-wrap chart-tall"><canvas id="permChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">GA Feature Selection</div>
+              <div class="chart-subtitle">Binary chromosome &bull; Selected vs not selected technical indicators</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="gaChart"></canvas></div>
+          <div class="ga-info" id="ga-info"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Technical Indicators</div>
+              <div class="chart-subtitle">Select indicator to visualise &bull; Full price history</div>
+            </div>
+            <div class="chart-controls" id="tech-toggle"></div>
+          </div>
+          <div class="chart-wrap"><canvas id="techChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="komvar-table-wrap">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-title">KomVar Configuration Matrix</div>
+            <div class="chart-subtitle">22 variable combinations &bull; Feature inclusion flags &bull; Sorted by WFV RMSE</div>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table class="komvar-table" id="komvar-table">
+            <thead>
+              <tr>
+                <th>KomVar</th><th>Features</th><th>IHSG</th><th>ExchRate</th><th>IntRate</th><th>Sentiment</th><th>EnhSent</th><th>Lagged</th><th>WFV RMSE &times;10<sup>-4</sup></th>
+              </tr>
+            </thead>
+            <tbody id="komvar-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="backtest" class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow">Financial Deployment &bull; Trading Simulation</div>
+          <h2 class="section-title">AI-Guided Backtest <span class="accent">vs Buy &amp; Hold</span></h2>
+          <p class="section-desc">Signal: go long if predicted next-day close &gt; current close &bull; Initial capital 10,000,000 IDR &bull; No transaction costs</p>
+        </div>
+      </div>
+
+      <div class="backtest-kpi-row" id="backtest-kpis"></div>
+
+      <div class="chart-row chart-row-3col">
+        <div class="chart-card chart-col-2">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Portfolio Value Simulation</div>
+              <div class="chart-subtitle">AI-guided active strategy vs passive buy and hold &bull; Test period</div>
+            </div>
+          </div>
+          <div class="chart-wrap chart-tall"><canvas id="backtestChart"></canvas></div>
+        </div>
+        <div class="chart-card chart-col-1">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Daily Return Distribution</div>
+              <div class="chart-subtitle">Strategy vs benchmark daily returns histogram</div>
+            </div>
+          </div>
+          <div class="chart-wrap chart-tall"><canvas id="returnDistChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="chart-row chart-row-3col">
+        <div class="chart-card chart-col-2">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Trade Signal Overlay</div>
+              <div class="chart-subtitle">BBCA price with AI buy signals on test period &bull; Long positions highlighted</div>
+            </div>
+          </div>
+          <div class="chart-wrap chart-tall"><canvas id="signalChart"></canvas></div>
+        </div>
+        <div class="chart-card chart-col-1">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Black-Litterman Portfolio</div>
+              <div class="chart-subtitle">Optimal weights: sentiment-adjusted posterior returns &bull; BBCA vs IHSG</div>
+            </div>
+          </div>
+          <div class="chart-wrap chart-tall"><canvas id="blPortfolio"></canvas></div>
+          <div class="bl-summary" id="bl-summary"></div>
+        </div>
+      </div>
+
+      <div class="explainer-box">
+        <div class="explainer-title">Trading Strategy Logic</div>
+        <p class="explainer-text">The AI-guided strategy generates a buy signal at time t if the LSTM model predicts a higher closing price at t+1 than the current actual close at t. The strategy enters a long (buy) position at open of t+1 and exits if the next prediction is bearish. This simulates a next-day directional trading strategy with no short-selling, no leverage, and no transaction costs. Sharpe ratio is computed with annualised excess returns (252 trading days, BI risk-free rate).</p>
+      </div>
+    </section>
+
+    <section id="statistics" class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow">Econometrics &bull; Statistical Testing</div>
+          <h2 class="section-title">Statistical Significance <span class="accent">&amp; Diagnostics</span></h2>
+          <p class="section-desc">Residual diagnostics &bull; Ljung-Box Q-Test &bull; Diebold-Mariano test &bull; Granger causality &bull; Cross-correlation function</p>
+        </div>
+      </div>
+
+      <div class="stat-test-cards" id="stat-test-cards"></div>
+
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Residual Distribution</div>
+              <div class="chart-subtitle">Prediction errors &bull; Best LSTM model &bull; Normal fit overlay</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="residualHist"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Residual ACF</div>
+              <div class="chart-subtitle">Autocorrelation function up to lag 15 &bull; 95% confidence bounds</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="acfChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Granger Causality Results</div>
+              <div class="chart-subtitle">Sentiment &rarr; Returns and Returns &rarr; Sentiment &bull; p-values per lag</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="grangerChart"></canvas></div>
+          <div id="granger-summary" class="stat-summary"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Cross-Correlation Function</div>
+              <div class="chart-subtitle">Sentiment change vs stock return &bull; Positive lag = sentiment leads</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="ccfChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="dm-test-table" id="dm-test-table"></div>
+
+      <div class="explainer-box">
+        <div class="explainer-title">Diebold-Mariano Test</div>
+        <p class="explainer-text">The Diebold-Mariano (DM) test formally assesses whether the difference in predictive accuracy between two competing forecasts is statistically significant rather than random. The test statistic is computed as the standardised mean of the loss differential series d_t = L(e1_t) - L(e2_t), where L is either MSE or MAE loss. A p-value below 0.05 rejects the null of equal predictive accuracy. The long-run variance accounts for potential autocorrelation in the loss differential series up to the forecast horizon h.</p>
+      </div>
+      <div class="explainer-box">
+        <div class="explainer-title">Ljung-Box Q-Test</div>
+        <p class="explainer-text">The Ljung-Box test checks whether the LSTM residuals e_t = y_t - y_hat_t exhibit any remaining autocorrelation up to a specified lag m. The Q statistic follows a chi-squared distribution under the null of white noise. Failing to reject H0 (p &gt; 0.05) confirms that the model has adequately captured the serial structure in the data, and the prediction errors are i.i.d. noise, which is the desired property of a well-specified forecasting model.</p>
+      </div>
+    </section>
+
+    <section id="forecast" class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow">Forward-Looking &bull; 5-Day Ahead</div>
+          <h2 class="section-title">Price <span class="accent">Forecast</span></h2>
+          <p class="section-desc">5 business days forward prediction &bull; Best KomVar optimised LSTM &bull; Auto-regressive multi-step forecasting</p>
+        </div>
+      </div>
+
+      <div class="forecast-kpi-row" id="forecast-kpis"></div>
+
+      <div class="chart-row chart-row-3col">
+        <div class="chart-card chart-col-2">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">5-Day Ahead Price Forecast</div>
+              <div class="chart-subtitle">Historical close (last 20 sessions) &bull; Forecast (dashed) with 3% confidence band</div>
+            </div>
+          </div>
+          <div class="chart-wrap chart-tall"><canvas id="forecastChart"></canvas></div>
+        </div>
+        <div class="chart-card chart-col-1">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Forecast Summary</div>
+              <div class="chart-subtitle">Predicted values per trading day</div>
+            </div>
+          </div>
+          <div id="forecast-table-wrap"></div>
+        </div>
+      </div>
+
+      <div class="explainer-box">
+        <div class="explainer-title">Multi-Step Auto-Regressive Forecasting</div>
+        <p class="explainer-text">The 5-day forecast is generated by feeding each prediction back as the next input: the model uses the last "timestamps" window of scaled features to predict t+1, then shifts the window by replacing the oldest observation with a synthetic row whose close column equals the predicted value (all other features carried forward). This auto-regressive approach accumulates error over longer horizons but provides a realistic deployment-ready inference pipeline. The 3% confidence band reflects approximate uncertainty based on the model's test-period MAPE.</p>
+      </div>
+    </section>
+
+    <section id="simulation" class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow">Interactive &bull; Real Data</div>
+          <h2 class="section-title">Trading <span class="accent">Simulator</span></h2>
+          <p class="section-desc">Simulate portfolio performance using actual BBCA.JK backtest data &bull; Adjust parameters and see real-time impact on returns, Sharpe ratio, and drawdown</p>
+        </div>
+        <div class="section-header-meta">
+          <div class="meta-chip"><span class="meta-dot green"></span>Live Simulation</div>
+          <div class="meta-chip"><span class="meta-dot blue"></span>Actual Data</div>
+        </div>
+      </div>
+
+      <div class="sim-ticker-wrap">
+        <div class="sim-ticker" id="sim-ticker">
+          <span class="ticker-item">BBCA.JK</span>
+          <span class="ticker-sep">|</span>
+          <span class="ticker-item" id="tick-price">Loading price...</span>
+          <span class="ticker-sep">|</span>
+          <span class="ticker-item" id="tick-rmse">RMSE: --</span>
+          <span class="ticker-sep">|</span>
+          <span class="ticker-item" id="tick-mape">MAPE: --</span>
+          <span class="ticker-sep">|</span>
+          <span class="ticker-item positive" id="tick-dir">Dir Acc: --</span>
+          <span class="ticker-sep">|</span>
+          <span class="ticker-item" id="tick-sharpe">Sharpe: --</span>
+        </div>
+      </div>
+
+      <div class="sim-controls-card">
+        <div class="sim-controls-title">&#9881; Simulation Parameters</div>
+        <div class="sim-params-grid">
+          <div class="sim-param">
+            <label class="sim-label">Initial Capital (IDR)</label>
+            <div class="sim-slider-wrap">
+              <input type="range" id="sim-capital" min="5000000" max="100000000" step="5000000" value="10000000" class="sim-slider">
+              <div class="sim-val" id="sim-capital-val">IDR 10,000,000</div>
+            </div>
+          </div>
+          <div class="sim-param">
+            <label class="sim-label">Transaction Cost (%)</label>
+            <div class="sim-slider-wrap">
+              <input type="range" id="sim-cost" min="0" max="1" step="0.05" value="0" class="sim-slider">
+              <div class="sim-val" id="sim-cost-val">0.00%</div>
+            </div>
+          </div>
+          <div class="sim-param">
+            <label class="sim-label">Confidence Threshold</label>
+            <div class="sim-slider-wrap">
+              <input type="range" id="sim-conf" min="0" max="5" step="0.5" value="0" class="sim-slider">
+              <div class="sim-val" id="sim-conf-val">0.0% min move</div>
+            </div>
+          </div>
+          <div class="sim-param">
+            <label class="sim-label">Position Size (%)</label>
+            <div class="sim-slider-wrap">
+              <input type="range" id="sim-pos" min="10" max="100" step="10" value="100" class="sim-slider">
+              <div class="sim-val" id="sim-pos-val">100%</div>
+            </div>
+          </div>
+          <div class="sim-param">
+            <label class="sim-label">Stop-Loss (%)</label>
+            <div class="sim-slider-wrap">
+              <input type="range" id="sim-sl" min="0" max="10" step="0.5" value="0" class="sim-slider">
+              <div class="sim-val" id="sim-sl-val">Disabled</div>
+            </div>
+          </div>
+          <div class="sim-param">
+            <label class="sim-label">Strategy Variant</label>
+            <div class="sim-toggle-group" id="sim-strategy">
+              <button class="sim-toggle active" data-val="ai">AI Signal</button>
+              <button class="sim-toggle" data-val="ai_sent">AI + Sentiment</button>
+              <button class="sim-toggle" data-val="bah">Buy &amp; Hold</button>
+            </div>
+          </div>
+        </div>
+        <button class="sim-run-btn" id="sim-run-btn">
+          <span class="sim-btn-icon">&#9654;</span> Run Simulation
+        </button>
+      </div>
+
+      <div class="sim-kpi-row" id="sim-kpi-row">
+        <div class="sim-kpi-card" id="sk-portfolio">
+          <div class="sim-kpi-label">Final Portfolio</div>
+          <div class="sim-kpi-value" id="sk-portfolio-val">--</div>
+          <div class="sim-kpi-delta" id="sk-portfolio-delta"></div>
+        </div>
+        <div class="sim-kpi-card" id="sk-return">
+          <div class="sim-kpi-label">Total Return</div>
+          <div class="sim-kpi-value" id="sk-return-val">--</div>
+          <div class="sim-kpi-delta" id="sk-return-delta"></div>
+        </div>
+        <div class="sim-kpi-card">
+          <div class="sim-kpi-label">Sharpe Ratio</div>
+          <div class="sim-kpi-value" id="sk-sharpe-val">--</div>
+          <div class="sim-kpi-delta" id="sk-sharpe-delta"></div>
+        </div>
+        <div class="sim-kpi-card">
+          <div class="sim-kpi-label">Max Drawdown</div>
+          <div class="sim-kpi-value" id="sk-mdd-val">--</div>
+          <div class="sim-kpi-delta" id="sk-mdd-delta"></div>
+        </div>
+        <div class="sim-kpi-card">
+          <div class="sim-kpi-label">Total Trades</div>
+          <div class="sim-kpi-value" id="sk-trades-val">--</div>
+          <div class="sim-kpi-delta" id="sk-trades-delta"></div>
+        </div>
+        <div class="sim-kpi-card">
+          <div class="sim-kpi-label">Win Rate</div>
+          <div class="sim-kpi-value" id="sk-winrate-val">--</div>
+          <div class="sim-kpi-delta" id="sk-winrate-delta"></div>
+        </div>
+        <div class="sim-kpi-card">
+          <div class="sim-kpi-label">vs Buy &amp; Hold</div>
+          <div class="sim-kpi-value" id="sk-alpha-val">--</div>
+          <div class="sim-kpi-delta" id="sk-alpha-delta"></div>
+        </div>
+      </div>
+
+      <div class="chart-row chart-row-3col">
+        <div class="chart-card chart-col-2">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Portfolio Value Over Time</div>
+              <div class="chart-subtitle">Simulated portfolio with adjusted parameters vs benchmark &bull; Based on actual test period data</div>
+            </div>
+            <div class="chart-controls">
+              <button class="ctrl-btn active" data-sim-view="portfolio">Portfolio</button>
+              <button class="ctrl-btn" data-sim-view="returns">Cum. Returns</button>
+              <button class="ctrl-btn" data-sim-view="drawdown">Drawdown</button>
+            </div>
+          </div>
+          <div class="chart-wrap chart-tall"><canvas id="simPortfolioChart"></canvas></div>
+        </div>
+        <div class="chart-card chart-col-1">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Monthly Returns Heatmap</div>
+              <div class="chart-subtitle">Month-by-month performance breakdown</div>
+            </div>
+          </div>
+          <div class="chart-wrap" id="simMonthlyWrap" style="height:260px;overflow:hidden"></div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Return Distribution</div>
+              <div class="chart-subtitle">Simulated daily returns histogram</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="simReturnDist"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-title">Trade Analysis</div>
+              <div class="chart-subtitle">Win/Loss per trade &bull; Actual signals applied</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="simTradeChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="explainer-box">
+        <div class="explainer-title">How the Simulation Works</div>
+        <p class="explainer-text">This simulator applies your chosen parameters to the <strong>actual LSTM model backtest data</strong> from the test period (2025&ndash;2026). The AI Signal strategy uses predicted vs actual close prices to generate long signals. Transaction costs are deducted on each trade entry/exit. The confidence threshold filters out low-conviction signals (small predicted moves). Position sizing applies fractional capital allocation. Stop-loss exits positions when intraday loss exceeds the threshold. All metrics are computed from real data — not a simulation of data.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <div class="nav-logo"><span class="logo-accent">Tweet</span>Trade BBCA</div>
+        <p>BBCA.JK Deep Learning Price Prediction &bull; Data Mining Research</p>
+        <p>LSTM &bull; GRU &bull; BiLSTM &bull; LSTM+Attention &bull; IndoBERT Sentiment</p>
+        <div class="footer-authors">
+          <div class="footer-author-label">Authors &bull; Class INT24</div>
+          <div class="footer-author">Daffa Ahmad Pangreksa &nbsp;<span class="footer-nim">159</span></div>
+          <div class="footer-author">Mylovia Mahesa Ayu &nbsp;<span class="footer-nim">001</span></div>
+        </div>
+      </div>
+      <div class="footer-right">
+        <div class="footer-meta"><span>Training Period</span><span>2019-01-01 &ndash; 2024-12-31</span></div>
+        <div class="footer-meta"><span>Test Period</span><span>2025-01-01 &ndash; 2026-06-01</span></div>
+        <div class="footer-meta"><span>Sentiment Model</span><span>mdhugol/indonesia-bert</span></div>
+        <div class="footer-meta"><span>KomVar Configs</span><span>22 combinations</span></div>
+        <div class="footer-meta"><span>Architectures</span><span>LSTM, GRU, BiLSTM, LSTM-Attn</span></div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script src="data-loader.js"></script>
+<script src="charts.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

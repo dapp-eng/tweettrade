@@ -1,0 +1,178 @@
+{
+  "KomVar1": {
+    "ihsg": true,
+    "exch": true,
+    "rate": true,
+    "sent": true,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar2": {
+    "ihsg": false,
+    "exch": true,
+    "rate": true,
+    "sent": true,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar3": {
+    "ihsg": true,
+    "exch": false,
+    "rate": true,
+    "sent": true,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar4": {
+    "ihsg": true,
+    "exch": true,
+    "rate": false,
+    "sent": true,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar5": {
+    "ihsg": true,
+    "exch": true,
+    "rate": true,
+    "sent": false,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar6": {
+    "ihsg": true,
+    "exch": true,
+    "rate": false,
+    "sent": false,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar7": {
+    "ihsg": true,
+    "exch": false,
+    "rate": true,
+    "sent": false,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar8": {
+    "ihsg": true,
+    "exch": false,
+    "rate": false,
+    "sent": true,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar9": {
+    "ihsg": false,
+    "exch": true,
+    "rate": true,
+    "sent": false,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar10": {
+    "ihsg": false,
+    "exch": true,
+    "rate": false,
+    "sent": true,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar11": {
+    "ihsg": false,
+    "exch": false,
+    "rate": true,
+    "sent": true,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar12": {
+    "ihsg": false,
+    "exch": false,
+    "rate": false,
+    "sent": false,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar13": {
+    "ihsg": false,
+    "exch": true,
+    "rate": false,
+    "sent": false,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar14": {
+    "ihsg": false,
+    "exch": false,
+    "rate": true,
+    "sent": false,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar15": {
+    "ihsg": false,
+    "exch": false,
+    "rate": false,
+    "sent": true,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar16": {
+    "ihsg": false,
+    "exch": false,
+    "rate": false,
+    "sent": false,
+    "enhanced_sent": false,
+    "lagged_features": false
+  },
+  "KomVar17": {
+    "ihsg": true,
+    "exch": true,
+    "rate": true,
+    "sent": false,
+    "enhanced_sent": true,
+    "lagged_features": false
+  },
+  "KomVar18": {
+    "ihsg": false,
+    "exch": false,
+    "rate": false,
+    "sent": false,
+    "enhanced_sent": true,
+    "lagged_features": false
+  },
+  "KomVar19": {
+    "ihsg": true,
+    "exch": true,
+    "rate": true,
+    "sent": true,
+    "enhanced_sent": true,
+    "lagged_features": false
+  },
+  "KomVar20": {
+    "ihsg": true,
+    "exch": true,
+    "rate": true,
+    "sent": true,
+    "enhanced_sent": true,
+    "lagged_features": true
+  },
+  "KomVar21": {
+    "ihsg": true,
+    "exch": true,
+    "rate": true,
+    "sent": false,
+    "enhanced_sent": true,
+    "lagged_features": true
+  },
+  "KomVar22": {
+    "ihsg": true,
+    "exch": true,
+    "rate": true,
+    "sent": true,
+    "enhanced_sent": false,
+    "lagged_features": true
+  }
+}

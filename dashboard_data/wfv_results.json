@@ -1,0 +1,134 @@
+[
+  {
+    "index":7,
+    "Variable":"KomVar8",
+    "Mean (E-4)":234.153947,
+    "HasSentiment":"Y"
+  },
+  {
+    "index":11,
+    "Variable":"KomVar12",
+    "Mean (E-4)":235.545736,
+    "HasSentiment":"N"
+  },
+  {
+    "index":15,
+    "Variable":"KomVar16",
+    "Mean (E-4)":235.545736,
+    "HasSentiment":"N"
+  },
+  {
+    "index":9,
+    "Variable":"KomVar10",
+    "Mean (E-4)":236.240052,
+    "HasSentiment":"Y"
+  },
+  {
+    "index":3,
+    "Variable":"KomVar4",
+    "Mean (E-4)":236.952245,
+    "HasSentiment":"Y"
+  },
+  {
+    "index":5,
+    "Variable":"KomVar6",
+    "Mean (E-4)":242.955811,
+    "HasSentiment":"N"
+  },
+  {
+    "index":14,
+    "Variable":"KomVar15",
+    "Mean (E-4)":247.50559,
+    "HasSentiment":"Y"
+  },
+  {
+    "index":12,
+    "Variable":"KomVar13",
+    "Mean (E-4)":253.26314,
+    "HasSentiment":"N"
+  },
+  {
+    "index":13,
+    "Variable":"KomVar14",
+    "Mean (E-4)":253.77308,
+    "HasSentiment":"N"
+  },
+  {
+    "index":17,
+    "Variable":"KomVar18",
+    "Mean (E-4)":260.555405,
+    "HasSentiment":"Y"
+  },
+  {
+    "index":6,
+    "Variable":"KomVar7",
+    "Mean (E-4)":262.11252,
+    "HasSentiment":"N"
+  },
+  {
+    "index":8,
+    "Variable":"KomVar9",
+    "Mean (E-4)":265.318234,
+    "HasSentiment":"N"
+  },
+  {
+    "index":2,
+    "Variable":"KomVar3",
+    "Mean (E-4)":283.460867,
+    "HasSentiment":"Y"
+  },
+  {
+    "index":21,
+    "Variable":"KomVar22",
+    "Mean (E-4)":287.330491,
+    "HasSentiment":"Y"
+  },
+  {
+    "index":18,
+    "Variable":"KomVar19",
+    "Mean (E-4)":307.083873,
+    "HasSentiment":"Y"
+  },
+  {
+    "index":0,
+    "Variable":"KomVar1",
+    "Mean (E-4)":308.932271,
+    "HasSentiment":"Y"
+  },
+  {
+    "index":16,
+    "Variable":"KomVar17",
+    "Mean (E-4)":315.069939,
+    "HasSentiment":"Y"
+  },
+  {
+    "index":4,
+    "Variable":"KomVar5",
+    "Mean (E-4)":315.778654,
+    "HasSentiment":"N"
+  },
+  {
+    "index":1,
+    "Variable":"KomVar2",
+    "Mean (E-4)":337.941477,
+    "HasSentiment":"Y"
+  },
+  {
+    "index":20,
+    "Variable":"KomVar21",
+    "Mean (E-4)":400.567206,
+    "HasSentiment":"Y"
+  },
+  {
+    "index":10,
+    "Variable":"KomVar11",
+    "Mean (E-4)":408.697927,
+    "HasSentiment":"Y"
+  },
+  {
+    "index":19,
+    "Variable":"KomVar20",
+    "Mean (E-4)":491.104045,
+    "HasSentiment":"Y"
+  }
+]

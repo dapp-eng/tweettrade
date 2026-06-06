@@ -1,0 +1,41 @@
+{
+  "ga_selected_tech": [
+    "WMA",
+    "EMA",
+    "MOM",
+    "StoK",
+    "StoD",
+    "ADO",
+    "CCI",
+    "LWillR"
+  ],
+  "best_rmse_ga": 50.42542116186877,
+  "best_chrom": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    1,
+    1,
+    1,
+    0
+  ],
+  "all_tech": [
+    "SMA",
+    "WMA",
+    "EMA",
+    "MOM",
+    "StoK",
+    "StoD",
+    "RSI",
+    "MACD",
+    "ADO",
+    "CCI",
+    "LWillR",
+    "MFI"
+  ]
+}

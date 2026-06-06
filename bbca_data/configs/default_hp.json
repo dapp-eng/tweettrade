@@ -1,0 +1,8 @@
+{
+  "units": 100,
+  "dropout": 0.1,
+  "lr": 0.001,
+  "batch": 32,
+  "optimizer": "Adam",
+  "timestamps": 10
+}

@@ -1,0 +1,60 @@
+{
+  "SEED": 42,
+  "DEVICE": "cuda",
+  "START_DATE": "2019-01-01",
+  "TRAIN_END": "2024-12-31",
+  "TEST_START": "2025-01-01",
+  "TEST_END": "2026-06-01",
+  "SENT_MODEL": "mdhugol/indonesia-bert-sentiment-classification",
+  "ALL_TECH": [
+    "SMA",
+    "WMA",
+    "EMA",
+    "MOM",
+    "StoK",
+    "StoD",
+    "RSI",
+    "MACD",
+    "ADO",
+    "CCI",
+    "LWillR",
+    "MFI"
+  ],
+  "SEL_TECH": [
+    "SMA",
+    "StoD",
+    "RSI",
+    "MACD",
+    "ADO",
+    "CCI",
+    "MFI"
+  ],
+  "FINAL_TECH": [
+    "WMA",
+    "EMA",
+    "MOM",
+    "StoK",
+    "StoD",
+    "ADO",
+    "CCI",
+    "LWillR"
+  ],
+  "BEST_KV": "KomVar8",
+  "SECOND_KV": "KomVar10",
+  "SENTIMENT_KV": [
+    "KomVar1",
+    "KomVar2",
+    "KomVar3",
+    "KomVar4",
+    "KomVar8",
+    "KomVar10",
+    "KomVar11",
+    "KomVar15",
+    "KomVar17",
+    "KomVar18",
+    "KomVar19",
+    "KomVar20",
+    "KomVar21",
+    "KomVar22"
+  ]
+}
