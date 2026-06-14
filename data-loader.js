@@ -3,6 +3,7 @@ const DATA_BASE = './dashboard_data/';
 const DashData = {
   bbca: null,
   dailySent: null,
+  tweetCorpusStats: null,
   techIndicators: null,
   dfAll: null,
   wfvResults: null,
@@ -66,6 +67,7 @@ async function loadAllData() {
   const steps = [
     ['bbca_ohlcv.json',               d => { DashData.bbca = d; }],
     ['daily_sentiment.json',          d => { DashData.dailySent = d; }],
+    ['tweet_corpus_stats.json',       d => { DashData.tweetCorpusStats = d; }],
     ['tech_indicators.json',          d => { DashData.techIndicators = d; }],
     ['df_all.json',                   d => { DashData.dfAll = d; }],
     ['wfv_results.json',              d => { DashData.wfvResults = d; }],

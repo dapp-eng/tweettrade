@@ -112,8 +112,12 @@ if (hamburgerBtn && mobileMenu) {
       }
     }
 
-    if (dailySent && dailySent.length && tweetsEl) {
-      const total = dailySent.reduce((s, r) => s + (Number(r.n_total) || 0), 0);
+    if (tweetsEl) {
+      const corpusTotal = DashData.tweetCorpusStats ? DashData.tweetCorpusStats.n_total : null;
+      const fallbackTotal = dailySent && dailySent.length
+        ? dailySent.reduce((s, r) => s + (Number(r.n_total) || 0), 0)
+        : 0;
+      const total = corpusTotal ?? fallbackTotal;
       if (total > 0) animateNum(tweetsEl, total.toLocaleString('id-ID'));
     }
 
@@ -154,10 +158,11 @@ if (hamburgerBtn && mobileMenu) {
     const wrap = document.getElementById('sent-kpis');
     if (!wrap || !data || !data.length) return;
 
-    const nPos = data.reduce((s, r) => s + (Number(r.n_pos) || 0), 0);
-    const nNeg = data.reduce((s, r) => s + (Number(r.n_neg) || 0), 0);
-    const nTotal = data.reduce((s, r) => s + (Number(r.n_total) || 0), 0);
-    const nNeu = Math.max(0, nTotal - nPos - nNeg);
+    const corpus = DashData.tweetCorpusStats;
+    const nTotal = corpus ? corpus.n_total : data.reduce((s, r) => s + (Number(r.n_total) || 0), 0);
+    const nPos   = corpus ? corpus.n_pos   : data.reduce((s, r) => s + (Number(r.n_pos)   || 0), 0);
+    const nNeg   = corpus ? corpus.n_neg   : data.reduce((s, r) => s + (Number(r.n_neg)   || 0), 0);
+    const nNeu   = corpus ? corpus.n_neu   : Math.max(0, nTotal - nPos - nNeg);
 
     const avgSent = data.map(r => r.sent_score).filter(v => v != null);
     const meanSent = avgSent.length ? avgSent.reduce((s, v) => s + v, 0) / avgSent.length : null;

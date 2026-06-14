@@ -44,6 +44,27 @@ if sent is not None:
                         "sentiment_dispersion_std"] if c in sent.columns]
     df_to_json(sent[cols], OUT_DIR / "daily_sentiment.json")
 
+print("[2b] Tweet Corpus Stats")
+sent_scores = safe_read_parquet(EXPORT_DIR / "data/df_sent_scores.parquet")
+if sent_scores is not None:
+    n_total = int(len(sent_scores))
+    n_pos   = int((sent_scores["label"] == "positive").sum())
+    n_neg   = int((sent_scores["label"] == "negative").sum())
+    n_neu   = int((sent_scores["label"] == "neutral").sum())
+    corpus_stats = {
+        "n_total": n_total,
+        "n_pos":   n_pos,
+        "n_neg":   n_neg,
+        "n_neu":   n_neu,
+        "pct_pos": round(n_pos / n_total * 100, 1),
+        "pct_neg": round(n_neg / n_total * 100, 1),
+        "pct_neu": round(n_neu / n_total * 100, 1),
+    }
+    (OUT_DIR / "tweet_corpus_stats.json").write_text(
+        json.dumps(corpus_stats, indent=2)
+    )
+    print(f"  OK  tweet_corpus_stats.json  (total={n_total:,})")
+
 print("[3] Technical Indicators")
 tech = safe_read_parquet(EXPORT_DIR / "data/tech_indicators.parquet")
 if tech is not None:
